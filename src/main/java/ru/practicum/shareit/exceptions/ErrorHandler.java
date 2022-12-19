@@ -13,6 +13,7 @@ public class ErrorHandler {
     public ErrorResponse userAlreadyExists(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
+
     @ExceptionHandler({UserNotExistsException.class, ItemNotExistsException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse entityNotExists(final RuntimeException e) {
