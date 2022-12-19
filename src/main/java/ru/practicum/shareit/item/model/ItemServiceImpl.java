@@ -78,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void checkCorrectOwner(Item item, Long userId) {
-        if (item.getOwnerId().equals(userId)) {
+        if (!item.getOwnerId().equals(userId)) {
             throw new ItemIncorrectOwnerException("incorrect owner");
         }
     }
