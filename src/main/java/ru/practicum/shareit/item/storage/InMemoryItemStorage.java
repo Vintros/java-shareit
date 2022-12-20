@@ -1,8 +1,9 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.storage;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.ItemNotExistsException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,10 +40,10 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public Item updateItem(ItemDto itemDto, Long itemId) {
         Item item = items.get(itemId);
-        if (itemDto.getName() != null && !itemDto.getName().isEmpty()) {
+        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
             item.setName(itemDto.getName());
         }
-        if (itemDto.getDescription() != null && !itemDto.getDescription().isEmpty()) {
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
             item.setDescription(itemDto.getDescription());
         }
         if (itemDto.getAvailable() != null) {

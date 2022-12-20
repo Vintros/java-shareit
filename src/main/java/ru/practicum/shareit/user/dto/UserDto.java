@@ -14,9 +14,9 @@ public class UserDto {
 
     private Long id;
     @Email
-    @NotBlank
+    @NotBlank(message = "incorrect email")
     private String email;
-    @NotBlank
+    @NotBlank(message = "the name cannot be empty")
     private String name;
 
 }

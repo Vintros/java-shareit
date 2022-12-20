@@ -1,10 +1,10 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exceptions.EmailIncorrectException;
 import ru.practicum.shareit.exceptions.UserExistsException;
 import ru.practicum.shareit.exceptions.UserNotExistsException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,6 @@ public class InMemoryUserStorage implements UserStorage {
         checkUserNotExistsByEmail(userDto.getEmail());
         User oldUser = users.get(id);
         if (userDto.getEmail() != null) {
-            checkCorrectEmail(userDto.getEmail());
             oldUser.setEmail(userDto.getEmail());
         }
         if (userDto.getName() != null) {
@@ -40,7 +39,6 @@ public class InMemoryUserStorage implements UserStorage {
         }
         return oldUser;
     }
-
 
     @Override
     public List<User> getUsers() {
@@ -59,14 +57,15 @@ public class InMemoryUserStorage implements UserStorage {
         users.remove(id);
     }
 
-    private Long getNewId() {
-        return ++id;
-    }
-
+    @Override
     public void checkUserExistsById(Long id) {
         if (!users.containsKey(id)) {
             throw new UserNotExistsException("such user not registered");
         }
+    }
+
+    private Long getNewId() {
+        return ++id;
     }
 
     private void checkUserNotExistsByEmail(String email) {
@@ -77,13 +76,4 @@ public class InMemoryUserStorage implements UserStorage {
             throw new UserExistsException("a user with such an email is already registered");
         }
     }
-
-    private void checkCorrectEmail(String email) {
-        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        if (!email.matches(regexPattern)) {
-            throw new EmailIncorrectException("incorrect email");
-        }
-    }
-
 }

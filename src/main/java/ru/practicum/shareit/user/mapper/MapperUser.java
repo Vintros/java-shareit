@@ -1,7 +1,8 @@
-package ru.practicum.shareit.user.dto;
+package ru.practicum.shareit.user.mapper;
 
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class MapperUser {
 
     public User convertUserDtoToUser(UserDto userDto) {
-        return new User(userDto.getEmail(), userDto.getName());
+        return new User(null, userDto.getEmail(), userDto.getName());
     }
 
     public UserDto convertUserToUserDto(User user) {
