@@ -19,11 +19,11 @@ public interface BookingRepository extends CrudRepository<Booking, Long> {
     List<Booking> findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(Long bookerId, LocalDateTime now,
                                                                   LocalDateTime sameNow, Sort sort);
 
-    List<Booking> findAllByBooker_IdAndStartIsAfter(Long bookerId, LocalDateTime Now, Sort sort);
+    List<Booking> findAllByBooker_IdAndStartIsAfter(Long bookerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findAllByBooker_IdAndEndIsBefore(Long bookerId, LocalDateTime Now, Sort sort);
+    List<Booking> findAllByBooker_IdAndEndIsBefore(Long bookerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findAllByBooker_IdAndStatusIs(Long booker_id, Enum<Status> status, Sort sort);
+    List<Booking> findAllByBooker_IdAndStatusIs(Long bookerId, Enum<Status> status, Sort sort);
 
     List<Booking> findAllByItem_User_Id(Long userId, Sort sort);
 
