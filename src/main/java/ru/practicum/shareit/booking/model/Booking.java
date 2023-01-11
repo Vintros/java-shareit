@@ -23,15 +23,16 @@ public class Booking {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "booker_id", nullable = false)
     private User booker;
 
     @Column(nullable = false)
-    private Enum<Status> status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(name = "start_date", nullable = false)
     private LocalDateTime start;

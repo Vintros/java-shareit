@@ -24,7 +24,7 @@ public class Item {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(nullable = false)
