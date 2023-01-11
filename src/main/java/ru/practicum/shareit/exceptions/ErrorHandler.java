@@ -57,11 +57,11 @@ public class ErrorHandler {
         return new ErrorResponse("Unknown state: " + e.getValue());
     }
 
-    @ExceptionHandler({Throwable.class})
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse unexpectedError(final Throwable e) {
-        log.error(e.getMessage());
-        return new ErrorResponse("unexpected error");
-    }
+//    @ExceptionHandler({Throwable.class})
+//    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ErrorResponse unexpectedError(final Throwable e) {
+//        log.error(e.getMessage());
+//        return new ErrorResponse("unexpected error");
+//    }
 
 }
