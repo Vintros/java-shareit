@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Objects;
 
@@ -20,21 +21,22 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({UserNotExistsException.class, ItemNotExistsException.class})
+    @ExceptionHandler({EntityNotExistsException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse entityNotExists(final RuntimeException e) {
         log.error(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({ItemIncorrectOwnerException.class})
+    @ExceptionHandler({ItemAccessErrorException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse incorrectOwner(final RuntimeException e) {
         log.error(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({EmailIncorrectException.class, UserNameIncorrectException.class})
+    @ExceptionHandler({EmailIncorrectException.class, UserNameIncorrectException.class,
+            ItemNotAvailableException.class, BookingTimeNotAllowedException.class, BookingAccessErrorException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse incorrectEmail(final RuntimeException e) {
         log.error(e.getMessage());
@@ -48,10 +50,18 @@ public class ErrorHandler {
         return new ErrorResponse(Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse incorrectStatus(final MethodArgumentTypeMismatchException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Unknown state: " + e.getValue());
+    }
+
+    @ExceptionHandler({Throwable.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse unexpectedError(final Throwable e) {
         log.error(e.getMessage());
         return new ErrorResponse("unexpected error");
     }
+
 }
