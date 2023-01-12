@@ -1,8 +1,8 @@
-package ru.practicum.shareit.item.model.comments;
+package ru.practicum.shareit.item.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
-import ru.practicum.shareit.item.model.Item;
+
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;

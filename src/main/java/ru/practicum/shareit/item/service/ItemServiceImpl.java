@@ -4,21 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.dto.BookingDtoForItem;
-import ru.practicum.shareit.booking.mapper.MapperBooking;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.ItemAccessErrorException;
 import ru.practicum.shareit.exceptions.EntityNotExistsException;
 import ru.practicum.shareit.exceptions.ItemNotAvailableException;
-import ru.practicum.shareit.item.dto.comments.CommentDto;
-import ru.practicum.shareit.item.mapper.comments.MapperComment;
-import ru.practicum.shareit.item.model.comments.Comment;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.mapper.MapperComment;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.MapperItem;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.comments.CommentsRepository;
+import ru.practicum.shareit.item.storage.CommentsRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -38,7 +36,6 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentsRepository commentsRepository;
     private final MapperItem mapperItem;
-    private final MapperBooking mapperBooking;
     private final MapperComment mapperComment;
 
     @Override
@@ -127,18 +124,10 @@ public class ItemServiceImpl implements ItemService {
         LocalDateTime now = LocalDateTime.now();
         Booking lastBooking = bookingRepository.findFirstByItemIdAndStartBeforeOrderByStart(item.getId(),
                 now, sortLast);
-        BookingDtoForItem lastBookingDto = null;
-        if (lastBooking != null) {
-            lastBookingDto = mapperBooking.convertBookingToBookingDtoForItem(lastBooking);
-        }
         Sort sortNext = Sort.by("start").ascending();
         Booking nextBooking = bookingRepository.findFirstByItemIdAndStartAfterOrderByStart(item.getId(),
                 now, sortNext);
-        BookingDtoForItem nextBookingDto = null;
-        if (nextBooking != null) {
-            nextBookingDto = mapperBooking.convertBookingToBookingDtoForItem(nextBooking);
-        }
-        return mapperItem.convertItemToItemDtoForOwner(item, lastBookingDto, nextBookingDto);
+        return mapperItem.convertItemToItemDtoForOwner(item, lastBooking, nextBooking);
     }
 
 }

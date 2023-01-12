@@ -1,18 +1,15 @@
-package ru.practicum.shareit.item.mapper.comments;
+package ru.practicum.shareit.item.mapper;
 
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.dto.comments.CommentDto;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.comments.Comment;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MapperComment {
-
 
     public Comment convertCommentDtoToComment(CommentDto commentDto, Item item, User user) {
         Comment comment = new Comment();
@@ -30,11 +27,5 @@ public class MapperComment {
         commentDto.setAuthorName(comment.getAuthor().getName());
         commentDto.setCreated(comment.getCreated());
         return commentDto;
-    }
-
-    public List<CommentDto> convertAllCommentsToCommentsDto(List<Comment> comments) {
-        return comments.stream()
-                .map(this::convertCommentToCommentDto)
-                .collect(Collectors.toList());
     }
 }
