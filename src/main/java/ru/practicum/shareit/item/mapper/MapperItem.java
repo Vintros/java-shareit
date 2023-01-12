@@ -1,33 +1,58 @@
 package ru.practicum.shareit.item.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MapperItem {
 
     public ItemDto convertItemToItemDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.getAvailable());
+        itemDto.setComments(item.getComments());
+        return itemDto;
     }
 
-    public Item convertItemDtoToItem(ItemDto itemDto) {
+    public ItemDto convertItemToItemDtoForOwner(Item item,
+                                                Booking lastBooking, Booking nextBooking) {
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.getAvailable());
+        if (lastBooking != null) {
+            itemDto.setLastBooking(lastBooking);
+        }
+        if (nextBooking != null) {
+            itemDto.setNextBooking(nextBooking);
+        }
+        itemDto.setComments(item.getComments());
+        return itemDto;
+    }
+
+    public Item convertItemDtoToItem(ItemDto itemDto, User user) {
         Item item = new Item();
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
+        item.setUser(user);
         return item;
     }
 
     public List<ItemDto> convertAllItemsToItemsDto(List<Item> items) {
-        List<ItemDto> itemsDto = new ArrayList<>();
-        for (Item item : items) {
-            itemsDto.add(convertItemToItemDto(item));
-        }
-        return itemsDto;
+        return items.stream()
+                .map(this::convertItemToItemDto)
+                .collect(Collectors.toList());
     }
-
 }

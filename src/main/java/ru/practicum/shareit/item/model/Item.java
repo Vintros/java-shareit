@@ -1,16 +1,39 @@
 package ru.practicum.shareit.item.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.model.User;
 
-@RequiredArgsConstructor
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
+@Entity
+@Table(name = "items")
 public class Item {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
     private Long id;
-    private Long ownerId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(nullable = false)
     private String name;
+
     private String description;
+
     private Boolean available;
 
+    @OneToMany(mappedBy = "item")
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
 }

@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MapperUser {
@@ -19,10 +19,8 @@ public class MapperUser {
     }
 
     public List<UserDto> convertAllUsersToUsersDto(List<User> users) {
-        List<UserDto> usersDto = new ArrayList<>();
-        for (User user : users) {
-            usersDto.add(convertUserToUserDto(user));
-        }
-        return usersDto;
+        return users.stream()
+                .map(this::convertUserToUserDto)
+                .collect(Collectors.toList());
     }
 }
