@@ -14,13 +14,6 @@ import java.util.Objects;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler({UserExistsException.class})
-    @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ErrorResponse userAlreadyExists(final RuntimeException e) {
-        log.error(e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
     @ExceptionHandler({EntityNotExistsException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse entityNotExists(final RuntimeException e) {
@@ -35,8 +28,8 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({EmailIncorrectException.class, UserNameIncorrectException.class,
-            ItemNotAvailableException.class, BookingTimeNotAllowedException.class, BookingAccessErrorException.class})
+    @ExceptionHandler({ItemNotAvailableException.class, BookingTimeNotAllowedException.class,
+            BookingAccessErrorException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse incorrectEmail(final RuntimeException e) {
         log.error(e.getMessage());
