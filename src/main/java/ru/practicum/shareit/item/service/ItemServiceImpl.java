@@ -2,13 +2,14 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exceptions.ItemAccessErrorException;
-import ru.practicum.shareit.exceptions.EntityNotExistsException;
-import ru.practicum.shareit.exceptions.ItemNotAvailableException;
+import ru.practicum.shareit.common.exceptions.ItemAccessErrorException;
+import ru.practicum.shareit.common.exceptions.EntityNotExistsException;
+import ru.practicum.shareit.common.exceptions.ItemNotAvailableException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.mapper.MapperComment;
 import ru.practicum.shareit.item.model.Comment;
@@ -17,6 +18,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.MapperItem;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentsRepository;
+import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -35,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentsRepository commentsRepository;
+    private final ItemRequestRepository itemRequestRepository;
     private final MapperItem mapperItem;
     private final MapperComment mapperComment;
 
@@ -42,6 +45,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(ItemDto itemDto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotExistsException("such user not registered"));
+        if (itemDto.getRequestId() != null && !itemRequestRepository.existsById(itemDto.getRequestId())) {
+            throw new EntityNotExistsException("such request not registered");
+        }
         Item item = mapperItem.convertItemDtoToItem(itemDto, user);
         Item createdItem = itemRepository.save(item);
         log.info("Item with id: {} created", item.getId());
@@ -71,10 +77,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemsByOwner(Long userId) {
+    public List<ItemDto> getItemsByOwner(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotExistsException("such user not registered"));
-        List<Item> items = itemRepository.findAllByUserId(userId);
+        List<Item> items = itemRepository.findAllByUserId(userId, pageable);
         log.info("Owner's items with id: {} requested", user.getId());
         List<ItemDto> itemsDto = new ArrayList<>();
         for (Item item : items) {
@@ -84,12 +90,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItemsByRequest(String request) {
+    public List<ItemDto> searchItemsByRequest(String request, Pageable pageable) {
         if (request.isBlank()) {
             return new ArrayList<>();
         }
         List<Item> items = itemRepository
-                .findItemsByRequest(request);
+                .findItemsByRequest(request, pageable);
         log.info("Search for items by \"{}\" requested", request);
         return mapperItem.convertAllItemsToItemsDto(items);
     }
@@ -129,5 +135,4 @@ public class ItemServiceImpl implements ItemService {
                 now, sortNext);
         return mapperItem.convertItemToItemDtoForOwner(item, lastBooking, nextBooking);
     }
-
 }

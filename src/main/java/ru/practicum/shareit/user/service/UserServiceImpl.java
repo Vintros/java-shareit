@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.EntityNotExistsException;
+import ru.practicum.shareit.common.exceptions.EntityNotExistsException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -29,7 +29,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
-        User updatedUser = userRepository.updateUserById(id, userDto);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotExistsException("such user not registered"));
+        if (userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
+        }
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+        User updatedUser = userRepository.save(user);
         log.info("User with id: {} updated", id);
         return mapperUser.convertUserToUserDto(updatedUser);
     }
@@ -44,6 +52,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new EntityNotExistsException("such user not registered");
+        }
         userRepository.deleteById(id);
         log.info("User with id: {} deleted", id);
     }

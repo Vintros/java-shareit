@@ -27,6 +27,8 @@ public class ItemDto {
     @NotNull
     private Boolean available;
 
+    private Long requestId;
+
     private BookingDtoForItem lastBooking;
 
     private BookingDtoForItem nextBooking;
@@ -47,6 +49,10 @@ public class ItemDto {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public void setRequestId(Long requestId) {
+        this.requestId = requestId;
     }
 
     public void setLastBooking(Booking lastBooking) {
