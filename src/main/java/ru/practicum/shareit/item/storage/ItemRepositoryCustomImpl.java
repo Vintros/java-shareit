@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.storage;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exceptions.EntityNotExistsException;
+import ru.practicum.shareit.common.exceptions.EntityNotExistsException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 

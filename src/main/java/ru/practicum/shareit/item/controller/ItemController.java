@@ -1,17 +1,24 @@
 package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.common.model.FromSizeRequest;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
+@Validated
 public class ItemController {
 
     private final ItemService itemService;
@@ -34,13 +41,21 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByOwner(@RequestHeader(value = "X-Sharer-User-Id") Long userId) {
-        return itemService.getItemsByOwner(userId);
+    public List<ItemDto> getItemsByOwner(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                                         @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                         @Positive @RequestParam(defaultValue = "10") Integer size) {
+        Sort sort = Sort.by("id").ascending();
+        Pageable pageable = FromSizeRequest.of(from, size, sort);
+        return itemService.getItemsByOwner(userId, pageable);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItemsByRequest(@RequestParam String text) {
-        return itemService.searchItemsByRequest(text);
+    public List<ItemDto> searchItemsByRequest(@RequestParam String text,
+                                              @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                              @Positive @RequestParam(defaultValue = "10") Integer size) {
+        Sort sort = Sort.by("id").ascending();
+        Pageable pageable = FromSizeRequest.of(from, size, sort);
+        return itemService.searchItemsByRequest(text, pageable);
     }
 
     @PostMapping("/{itemId}/comment")
@@ -48,5 +63,4 @@ public class ItemController {
                                  @Valid @RequestBody CommentDto commentDto) {
         return itemService.createComment(itemId, userId, commentDto);
     }
-
 }

@@ -36,4 +36,7 @@ public class Item {
     @OneToMany(mappedBy = "item")
     @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
+
+    @Column(name = "request_id")
+    private Long requestId;
 }

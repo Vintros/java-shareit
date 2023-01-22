@@ -7,6 +7,6 @@ import ru.practicum.shareit.user.model.User;
 
 @Repository
 @Transactional
-public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustom {
+public interface UserRepository extends JpaRepository<User, Long> {
 
 }

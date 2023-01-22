@@ -2,7 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.mapper.MapperBooking;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.common.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -88,31 +88,32 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getALLBookings(Long userId, State state) {
+    public List<BookingDto> getALLBookings(Long userId, State state, Pageable pageable) {
         if (!userRepository.existsById(userId)) {
             throw new EntityNotExistsException("such user not registered");
         }
         List<Booking> bookings = new ArrayList<>();
-        Sort sort = Sort.by("start").descending();
         switch (state) {
             case ALL:
-                bookings.addAll(bookingRepository.findAllByBooker_Id(userId, sort));
+                bookings.addAll(bookingRepository.findAllByBooker_Id(userId, pageable));
                 break;
             case CURRENT:
                 bookings.addAll(bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(
-                        userId, LocalDateTime.now(), LocalDateTime.now(), sort));
+                        userId, LocalDateTime.now(), LocalDateTime.now(), pageable));
                 break;
             case FUTURE:
-                bookings.addAll(bookingRepository.findAllByBooker_IdAndStartIsAfter(userId, LocalDateTime.now(), sort));
+                bookings.addAll(bookingRepository.findAllByBooker_IdAndStartIsAfter(userId, LocalDateTime.now(),
+                        pageable));
                 break;
             case PAST:
-                bookings.addAll(bookingRepository.findAllByBooker_IdAndEndIsBefore(userId, LocalDateTime.now(), sort));
+                bookings.addAll(bookingRepository.findAllByBooker_IdAndEndIsBefore(userId, LocalDateTime.now(),
+                        pageable));
                 break;
             case WAITING:
-                bookings.addAll(bookingRepository.findAllByBooker_IdAndStatusIs(userId, WAITING, sort));
+                bookings.addAll(bookingRepository.findAllByBooker_IdAndStatusIs(userId, WAITING, pageable));
                 break;
             case REJECTED:
-                bookings.addAll(bookingRepository.findAllByBooker_IdAndStatusIs(userId, REJECTED, sort));
+                bookings.addAll(bookingRepository.findAllByBooker_IdAndStatusIs(userId, REJECTED, pageable));
                 break;
         }
         log.info("all bookings with state: {} asked", state);
@@ -120,31 +121,32 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingsByOwner(Long userId, State state) {
+    public List<BookingDto> getAllBookingsByOwner(Long userId, State state, Pageable pageable) {
         if (!userRepository.existsById(userId)) {
             throw new EntityNotExistsException("such user not registered");
         }
         List<Booking> bookings = new ArrayList<>();
-        Sort sort = Sort.by("start").descending();
         switch (state) {
             case ALL:
-                bookings.addAll(bookingRepository.findAllByItem_User_Id(userId, sort));
+                bookings.addAll(bookingRepository.findAllByItem_User_Id(userId, pageable));
                 break;
             case CURRENT:
                 bookings.addAll(bookingRepository.findAllByItem_User_IdAndStartIsBeforeAndEndIsAfter(
-                        userId, LocalDateTime.now(), LocalDateTime.now(), sort));
+                        userId, LocalDateTime.now(), LocalDateTime.now(), pageable));
                 break;
             case FUTURE:
-                bookings.addAll(bookingRepository.findAllByItem_User_IdAndStartIsAfter(userId, LocalDateTime.now(), sort));
+                bookings.addAll(bookingRepository.findAllByItem_User_IdAndStartIsAfter(userId, LocalDateTime.now(),
+                        pageable));
                 break;
             case PAST:
-                bookings.addAll(bookingRepository.findAllByItem_User_IdAndEndIsBefore(userId, LocalDateTime.now(), sort));
+                bookings.addAll(bookingRepository.findAllByItem_User_IdAndEndIsBefore(userId, LocalDateTime.now(),
+                        pageable));
                 break;
             case WAITING:
-                bookings.addAll(bookingRepository.findAllByItem_User_IdAndStatusIs(userId, WAITING, sort));
+                bookings.addAll(bookingRepository.findAllByItem_User_IdAndStatusIs(userId, WAITING, pageable));
                 break;
             case REJECTED:
-                bookings.addAll(bookingRepository.findAllByItem_User_IdAndStatusIs(userId, REJECTED, sort));
+                bookings.addAll(bookingRepository.findAllByItem_User_IdAndStatusIs(userId, REJECTED, pageable));
                 break;
         }
         log.info("all bookings with state: {} asked", state);

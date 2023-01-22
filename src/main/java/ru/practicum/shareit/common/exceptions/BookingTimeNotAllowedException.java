@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.common.exceptions;
 
 public class BookingTimeNotAllowedException extends RuntimeException {
 
