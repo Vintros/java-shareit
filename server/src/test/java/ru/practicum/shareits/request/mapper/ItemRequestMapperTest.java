@@ -2,10 +2,8 @@ package ru.practicum.shareits.request.mapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.practicum.shareits.item.model.Item;
 import ru.practicum.shareits.request.dto.ItemRequestDto;
 import ru.practicum.shareits.request.model.ItemRequest;
-import ru.practicum.shareits.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

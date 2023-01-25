@@ -36,7 +36,7 @@ class MapperBookingTest {
         bookingWithoutId = new Booking(null, item, booker, Status.WAITING, start, end);
 
         bookingDtoRequest = new BookingDtoRequest();
-        bookingDtoRequest.setItemId(id);
+        bookingDtoRequest.setItemId(1L);
         bookingDtoRequest.setStart(start);
         bookingDtoRequest.setEnd(end);
 
